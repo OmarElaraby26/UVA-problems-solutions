@@ -1,0 +1,76 @@
+// Author: Omar_Elaraby
+
+#include <bits/stdc++.h>
+using namespace std;
+#define x first
+#define y second
+
+double dist(const pair<int, int> &p1, const pair<int, int> &p2) {
+	return hypot(p1.x - p2.x, p1.y - p2.y);
+}
+
+class UnionFind {
+public:
+	vector<int> par, rank;
+	UnionFind(const int sz) {
+		par.resize(sz);
+		rank.resize(sz);
+		iota(par.begin(), par.end(), 0);
+	}
+
+	int find(const int a) {
+		if (a == par[a]) return a;
+		return par[a] = find(par[a]);
+	}
+
+	void link(const int a, const int b) {
+		int x = find(a), y = find(b);
+		if (rank[x] < rank[y]) swap(x, y);
+		par[y] = x;
+		if (rank[x] == rank[y]) ++rank[x];
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	int n;
+	while (cin >> n) {
+		vector<pair<int, int> > pts(n);
+		for (auto &p : pts) {
+			cin >> p.first >> p.second;
+		}
+
+		vector<pair<double, pair<int, int> > > edge;
+		for (int i = 0; i < pts.size(); ++i) {
+			for (int j = i + 1; j < pts.size(); ++j) {
+				edge.emplace_back(dist(pts[i], pts[j]), make_pair(i, j));
+			}
+		}
+		sort(edge.begin(), edge.end());
+
+		UnionFind dsu(n);
+		int e;
+		cin >> e;
+		for (int i = 0; i < e; ++i) {
+			int a, b;
+			cin >> a >> b;
+			--a, --b;
+			dsu.link(a, b);
+		}
+
+		double ans = 0;
+		for (int i = 0; i < edge.size(); ++i) {
+			int a = edge[i].second.first, b = edge[i].second.second;
+			if (dsu.find(a) != dsu.find(b)) {
+				dsu.link(a, b);
+				ans += edge[i].first;
+			}
+		}
+		cout << fixed << setprecision(2) << ans << '\n';
+	}
+
+	return 0;
+}
