@@ -1,0 +1,73 @@
+// Author: Omar_Elaraby
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class UnionFind {
+public:
+	vector<int> par, rank;
+	UnionFind(const int sz) {
+		par.resize(sz);
+		rank.resize(sz);
+		iota(par.begin(), par.end(), 0);
+	}
+
+	int find(const int u) {
+		if (u == par[u]) return u;
+		return par[u] = find(par[u]);
+	}
+
+	void link(const int a, const int b) {
+		int x = find(a), y = find(b);
+		if (rank[x] < rank[y]) swap(x, y);
+		par[y] = x;
+		if (rank[x] == rank[y]) ++rank[x];
+	}
+
+};
+
+double dist(const pair<double, double> &p1, const pair<double, double> &p2) {
+	return hypot(p1.first - p2.first, p1.second - p2.second);
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cout << fixed << setprecision(2);
+	int tt;
+	cin >> tt;
+	while (tt--) {
+		int n;
+		cin >> n;
+		vector<pair<double, double> > pts(n);
+		for (auto &p : pts) {
+			cin >> p.first >> p.second;
+		}
+
+		vector<pair<double, pair<int, int> > > edge;
+		for (int i = 0; i < pts.size(); ++i) {
+			for (int j = i + 1; j < pts.size(); ++j) {
+				edge.emplace_back(dist(pts[i], pts[j]), make_pair(i, j));
+			}
+		}
+		sort(edge.begin(), edge.end());
+
+		// kruskal algorithm with disjion data structure
+		UnionFind dsu(n);
+		double ans = 0;
+		for (int i = 0; i < edge.size(); ++i) {
+			int u = edge[i].second.first, v = edge[i].second.second;
+			if (dsu.find(u) != dsu.find(v)) {
+				dsu.link(u, v);
+				ans += edge[i].first;
+			}
+		}
+
+		cout << ans << '\n';
+		if (tt) cout << '\n';
+	}
+
+	return 0;
+}
