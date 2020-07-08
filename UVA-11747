@@ -1,0 +1,68 @@
+// Author: Omar_Elaraby
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+class UnionFind {
+public:
+	vector<int> par, size;
+	UnionFind(const int sz) {
+		par.resize(sz);
+		size.resize(sz, 1);
+		iota(par.begin(), par.end(), 0);
+	}
+
+	int find(const int a) {
+		if (a == par[a]) return a;
+		return par[a] = find(par[a]);
+	}
+
+	void link(const int a, const int b) {
+		int x = find(a), y = find(b);
+		if (x == y) return;
+		if (size[x] < size[y]) swap(x, y);
+		par[y] = x;
+		size[x] += size[y];
+	}
+};
+
+void kruskal(const vector<pair<int, pair<int, int> > > &edge, const int n) {
+	vector<int> ans;
+	UnionFind mst(n);
+	for (int i = 0; i < edge.size(); ++i) {
+		int u = edge[i].second.first, v = edge[i].second.second;
+		if (mst.find(u) != mst.find(v)) {
+			mst.link(u, v);
+		} else ans.emplace_back(edge[i].first);
+	}
+
+	if (!ans.size()) cout << "forest\n";
+	else {
+		for (int i = 0; i < ans.size(); ++i) {
+			cout << ans[i];
+			if (i + 1 < ans.size()) cout << ' ';
+		}
+		cout << '\n';
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	int n, e;
+	while (cin >> n >> e && n) {
+		vector<pair<int, pair<int, int> > > edge(e);
+		for (int i = 0; i < e; ++i) {
+			int a, b, w;
+			cin >> a >> b >> w;
+			edge[i] = { w, { a, b } };
+		}
+		sort(edge.begin(), edge.end());
+		kruskal(edge, n);
+	}
+
+	return 0;
+}
