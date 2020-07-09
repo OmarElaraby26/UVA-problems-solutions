@@ -1,0 +1,66 @@
+// Author: Omar_Elaraby
+
+#include <iostream>
+#include <vector> // for vector data structure
+#include <algorithm> // for sort() function
+#include <numeric> // for iota() function
+using namespace std;
+
+class UnionFind {
+public:
+	vector<int> par, rank;
+	UnionFind(const int sz) {
+		par.resize(sz);
+		rank.resize(sz);
+		iota(par.begin(), par.end(), 0);
+	}
+
+	int find(const int a) {
+		if (a == par[a]) return a;
+		return par[a] = find(par[a]);
+	}
+
+	void link(const int a, const int b) {
+		int x = find(a), y = find(b);
+		if (x == y) return;
+		if (rank[x] < rank[y]) swap(x, y);
+		par[y] = x;
+		if (rank[x] == rank[y]) ++rank[x];
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	int tt;
+	cin >> tt;
+	while (tt--) {
+		int n, e;
+		cin >> n >> e;
+		vector<pair<int, pair<int, int> > > edge(e);
+		for (int i = 0; i < e; ++i) {
+			int a, b, c;
+			cin >> a >> b >> c;
+			--a, --b;
+			edge[i] = { c, { a, b } };
+		}
+
+		// maximum spanning tree with kruskal and DSU
+		sort(edge.rbegin(), edge.rend());
+
+		UnionFind mst(n);
+		long long ans = 0;
+		for (int i = 0; i < e; ++i) {
+			int u = edge[i].second.first, v = edge[i].second.second;
+			if (mst.find(u) != mst.find(v)) {
+				mst.link(u, v);
+			} else ans += edge[i].first;
+		}
+
+		cout << ans << '\n';
+	}
+
+	return 0;
+}
