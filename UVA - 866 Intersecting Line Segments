@@ -1,11 +1,9 @@
 // Author: Omar_Elaraby
-// Created: ٢٠٢٠-٠٨-٢٠ ١٢:٠٠:٢٣ م
 
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
-#define EPS 1e-9
 
+typedef long long ll;
 #define Point pair<ll,ll>
 #define Vector Point
 #define x first
@@ -42,8 +40,6 @@ int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(0);
 	cout.tie(0);
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
 
 	int tt;
 	cin >> tt;
