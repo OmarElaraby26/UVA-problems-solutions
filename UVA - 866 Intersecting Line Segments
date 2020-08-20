@@ -1,0 +1,72 @@
+// Author: Omar_Elaraby
+// Created: ٢٠٢٠-٠٨-٢٠ ١٢:٠٠:٢٣ م
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define EPS 1e-9
+
+#define Point pair<ll,ll>
+#define Vector Point
+#define x first
+#define y second
+
+ll cross(const Vector &a, const Vector &b) {
+	return (a.x * b.y) - (a.y * b.x);
+}
+
+ll orient(const Point &a, const Point &b, const Point &c) {
+	Vector ab = make_pair(b.x - a.x, b.y - a.y);
+	Vector ac = make_pair(c.x - a.x, c.y - a.y);
+	return cross(ab, ac);
+}
+
+bool segSegX(const vector<Point> &seg1, vector<Point> &seg2) {
+	Point a = seg1[0], b = seg1[1];
+	Point c = seg2[0], d = seg2[1];
+
+	ll oc = orient(a, b, c);
+	ll od = orient(a, b, d);
+	ll oa = orient(c, d, a);
+	ll ob = orient(c, d, b);
+
+	if (oa * ob < 0 && oc * od < 0) return true;
+	return false;
+}
+
+istream& operator>>(istream &in, Point &p) {
+	return in >> p.x >> p.y;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+//    freopen("in.txt", "r", stdin);
+//    freopen("out.txt", "w", stdout);
+
+	int tt;
+	cin >> tt;
+	while (tt--) {
+		int n;
+		cin >> n;
+		vector<vector<Point> > seg(n, vector<Point>(2));
+
+		for (int i = 0; i < n; ++i) {
+			cin >> seg[i][0] >> seg[i][1];
+		}
+
+		long long ans = 0;
+		for (int i = 0; i < n; ++i) {
+			long long cnt = 0;
+			for (int j = 0; j < n; ++j) {
+				if (segSegX(seg[i], seg[j])) ++cnt;
+			}
+			ans += (cnt + 1);
+		}
+		cout << ans << '\n';
+		if (tt) cout << '\n';
+	}
+
+	return 0;
+}
