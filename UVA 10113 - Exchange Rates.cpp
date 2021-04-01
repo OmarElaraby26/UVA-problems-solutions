@@ -12,7 +12,7 @@ private:
 		if (par[u] == u) return u;
 		return par[u] = search(par[u]);
 	}
-	void changeAllGroupBy(const string &a, const ll factor) {
+	void increaseAllGroupBy(const string &a, const ll factor) {
 		for (auto &it : val) {
 			if (find(it.first) == find(a)) {
 				it.second *= factor;
@@ -20,11 +20,6 @@ private:
 		}
 	}
 
-	void flaten() {
-		for (const auto &it : par) {
-			find(it.first);
-		}
-	}
 
 	ll getGCDofGroup(const string &root) {
 		ll g = 0;
@@ -36,7 +31,7 @@ private:
 		return g;
 	}
 
-	void reduceAllGroupBy(const string &root, const ll factor) {
+	void decreaseAllGroupBy(const string &root, const ll factor) {
 		for (const auto &it : par) {
 			if (find(it.second) == find(root)) {
 				val[it.first] /= factor;
@@ -72,23 +67,21 @@ public:
 		b *= factor;
 
 		factor = l / val[x];
-		changeAllGroupBy(rx, factor);
-
+		increaseAllGroupBy(rx, factor);
 
 		l = lcm(b, val[y]);
 		factor = l / b;
 		a *= factor;
-		changeAllGroupBy(rx, factor);
+		increaseAllGroupBy(rx, factor);
 		b *= factor;
 
 		factor = l / val[y];
-		changeAllGroupBy(ry, factor);
+		increaseAllGroupBy(ry, factor);
 
 		siz[rx] += siz[ry];
 		par[ry] = rx;
 
-		flaten();
-		reduceAllGroupBy(rx, getGCDofGroup(rx));
+		decreaseAllGroupBy(rx, getGCDofGroup(rx));
 	}
 
 	bool isConn(const string &a, const string &b) {
